@@ -1,0 +1,115 @@
+//OK
+#include <stdio.h>
+#include <stdlib.h>
+
+void menu() {
+    printf("\n\n=====================================Menu====================================");
+    printf("\n1- Add a value");
+    printf("\n2- Search a value");
+    printf("\n3- Print out the array");
+    printf("\n4- Print out values in a range of inputted min and max values, inclusively");
+    printf("\n5- Sort the array in ascending order");
+    printf("\n6- Quit\n");
+}
+
+void FindIndex(int a[], int number, int value) {
+    int check = 0;
+    for (int i = 0; i < number; i++) { //vong lap duyet cac gia tri trong mang
+        if (a[i] == value) { //neu co gia tri bang voi gia tri can tim se in ra vi tri cua gia tri do trong mang
+            printf("\na[%d]", i);
+            check++;
+        }
+    }
+    if (check == 0) {
+        printf("\nNo value found in array");
+    }//Neu khong co gia tri can tim se in ra dong nay
+}
+
+int* GetValueInRange(int a[], int number, int minValue, int maxValue, int *pCount) {
+    int n = 0;
+    for (int i = 0; i < number; i++) { //Vong lap duyet mang
+        if (a[i] >= minValue && a[i] <= maxValue) {
+            printf("\t%d", a[i]);
+            n++;
+        }
+    }
+    if (n == 0) {
+        printf("\nNo values found in range");
+    }//Neu khong co gia tri nao trong khoang can tim trong khoang se in ra dong nay
+    *pCount = n;
+}
+
+int* SortAscendingArray(int a[], int number) {
+    for (int i = 0; i < number; i++) {
+        for (int j = 0; j <= i; j++) {
+            if (a[i] < a[j]) {
+                int tmp = a[i];
+                a[i] = a[j];
+                a[j] = tmp;
+            }
+        }
+    }
+    printf("\n\nArrays after being sorted: ");
+    for (int i = 0; i < number; i++) {
+        printf("\na[%d]=[%d] ", i, a[i]);
+    }
+}
+
+main() {
+    int n;
+    int value; //khai bao so can tim
+    int minValue; //Khai bao gia tri nho nhat
+    int maxValue; //Khai bao gia tri lon nhat
+    int pCount; //Khai bao con tro de dem
+    do {
+        printf("\nEnter size of array (size of array <= 100): ");
+        scanf("%d", &n);
+    } while (n > 100 || n < 1); //Nhap do lon cua mang theo dieu kien
+    int a[n]; //khai bao mang
+    menu();
+    do {
+        int m;
+        printf("\n\nEnter your choice: ");
+        scanf("%d", &m);
+        switch (m) {
+                //Add a value
+            case 1: printf("\nEnter element in array: ");
+                for (int i = 0; i < n; i++) {
+                    printf("\na[%d]= ", i);
+                    scanf("%d", &a[i]);
+                }//Nhap cac phan tu vao mang
+                break;
+
+                //Search a value
+            case 2:
+                printf("\nEnter the value to Search: ");
+                scanf("%d", &value); //Nhap gia tri can tim kiem
+                printf("\nValue postion to Search: ");
+                FindIndex(a, n, value);
+                break;
+            case 3:
+            	//Print out the arr
+                printf("\nPrint out the array: ");
+                for (int i = 0; i < n; i++) {
+                    printf("\na[%d]=[%d] ", i, a[i]);
+                }
+                break;
+            case 4:
+                printf("\nEnter min value: ");
+                scanf("%d", &minValue); //Nhap gia tri nho nhat
+                printf("Enter max value: ");
+                scanf("%d", &maxValue); //Nhap gia tri lon nhat
+                printf("\nAll value in [minValue,maxValue] ");
+                *GetValueInRange(a, n, minValue, maxValue, &pCount);
+                printf("\n\nNumber of value exist [minValue,maxValue]: ");
+                printf("\t%d", pCount);
+                break;
+            case 5: *SortAscendingArray(a, n);//Sort the arr i ascending order
+            break;
+            case 6: exit(0);
+            default:
+                printf("\nPlease Enter Choice following menu");
+                menu();
+        }
+    } while (1);
+}
