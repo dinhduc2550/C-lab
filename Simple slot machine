@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void menu() {//Cac option cua simple slot machine
+    printf("\nChoose one of the following menu options: ");
+    printf("\n1) Play the slot machine.");
+    printf("\n2) Save game.");
+    printf("\n3) Cash out.\n");
+}
+
+void play(int a[]) {//Ham sinh so ngau nhien
+
+    int j = 0;//j se giup luu cac gia tri sau khi sinh ra ngau nhien vao mang a
+    printf("\nThe slot machine shows: ");
+    for (int i = 0; i < 3; i++) {//vong lap 3 lan, moi lan se sinh ra mot chu so ngau nhien
+        int num = rand() % 9;//Gioi han trong khoang tu 0 den 9
+        printf("%d", num);
+        a[j] = num;//Luu gia tri sau do j se tang len de luu vao o nho tiep theo
+        j++;
+    }
+    printf("\n");
+}
+
+float moneyRestore(float *moneyR) {//Ham de lay lai ket qua da duoc save
+    FILE *f = fopen("SaveGame1.txt", "r");//Mo file txt
+    fscanf(f, "%f", moneyR);//Truyen ket qua vao con tro
+    fclose(f);//Dong file
+    return (*moneyR);//Tra ve ket qua ve ham
+}
+
+int main() {
+    srand(time(NULL));//Giup ham sinh ra so ngay nhien dua tren thu vien <time.h>
+    int a[3];//Khai bao mang de ti so sanh 3 so duoc sinh ra ngau nhien
+    float money = 10;//Khai bao so tien ban dau
+    FILE *f;//Tao con tro file
+    money = moneyRestore(&money);//khoi phuc so tien da luu tu truoc
+    do {
+        int m;//khai bao lua chon
+        menu();
+        scanf("%d", &m);//Nhap lua chon
+        switch (m) {
+            case 1:
+                play(a);
+                for (int i = 0; i < 3; i++) {//Vong lap so sanh tung so da duoc sinh ra ngau nhien
+                    if (a[i] != a[i + 1] && a[i] != a[i + 2] && a[i + 1] != a[i + 2]) {//Neu 3 so khac nhau 
+                        money = money - 0.25;//Tien se giam di 0.25 cent
+                        printf("\nSorry you don't win anything");
+                        break;
+                    }
+                    if (a[i] == a[i + 1] && a[i] == a[i + 2] && a[i + 1] == a[i + 2]) {//Neu 3 so giong nhau
+                        money = money + 9.75;//Tien se tang len = 10 - 0.25(phi de choi)
+                        printf("\nYou win the big price, $10.00!");
+                        break;
+                    }
+                    if (a[i] == a[i + 1] || a[i] == a[i + 2] || a[i + 1] == a[i + 2]) {//Neu 3 so co 1 cap giong nhau
+                        money = money + 0.25;//So tien tang len = 0.5 - 0.25(phi de choi)
+                        printf("\nYou win 50 cent");
+                    }
+                    break;
+                }
+                printf("\nYou have: %.2f.\n", money); //neu khong con tien chuong trinh se thoat
+                if (money == 0) {
+                    printf("\nSorry! You don't have enough money,Auto Exit game");
+                    exit(0);
+                }
+                break;
+            case 2://Option 2: Save game
+                f = fopen("SaveGame1.txt", "w"); //Mo file save game
+                fprintf(f, "%.2f\n", money); //Save tien
+                printf("\n");
+                fclose(f); //Dong file
+                break;
+            case 3:
+                //Option 3: Exit game
+                printf("\nThank you for playing! You end with $%.2f!\n", money);
+                exit(0);//thoat vong lap do while(1)
+        }
+    } while (1);
+}
