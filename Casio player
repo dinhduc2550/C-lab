@@ -1,0 +1,238 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void menu() {
+    printf("\n 1) Buy chips \n 2) Sell chips \n 3) Play Craps \n 4) Play Arup's Game of Dice \n 5) Status Report \n 6) Quit");
+}
+
+int intInput(int min, int max) {
+    int i, output, check;
+    char ch;
+    while (1) {
+        check = scanf("%d%c", &output, &ch); //Nhap mot so nguyen va mot ky tu
+        fflush(stdin);
+        // Neu khong nhap dung so nguyen va an nut Enter se tra ve wrong input va chay lai vong lap
+        if (check != 2 || ch != 10)
+            printf("\n Wrong input!Try again: ");
+            // Neu gia tri vuot ra ngoai khoang tu 1 den 6 se chay lai vong lap
+        else if (output < min || output > max)
+            printf("\n Outrange input(%d-%d)! Try again: ", min, max);
+        else return output; //Neu cac dieu kien deu thoa man tra ve gia tri cho output
+    }
+}
+
+void Status_Report(float *yourM, int *chip) {
+    printf("\n You currently have $%.2f left and %d chips: \n", *yourM, *chip);
+}
+
+void buyChip(float *yourM, int *chip) {
+    int cash; //S? ti?n b? ra mua chip
+    float yourM_extra = 0; //S? ti?n d? sau khi mua chip n?u là s? th?p phân
+    do {
+        printf("\n How much cash you want to spend for chips: ");
+        scanf("%d", &cash);
+    } while (cash > *yourM);
+    //int cash2 = cash
+    (*chip) = cash / 11; //S? chip mua ???c b?ng s? ti?n b? ra chia cho 11
+    if (cash % 11 != 0) {
+        yourM_extra = cash - (*chip)*11;
+    }
+    (*yourM) = (*yourM) - cash + yourM_extra;
+
+}
+
+void sellChip(int *chip,int *yourM_Left) {
+    int sellChip;
+    printf("\n How many chips do you want to sell: ");
+    scanf("%d", &sellChip);
+    if (sellChip <= (*chip)) {
+        (*chip) = (*chip) - sellChip;
+        *yourM_Left = (sellChip)*10;
+    }
+    else {
+        printf("\n You dont have enoght chip to sell");
+    }
+}
+
+void playCraps(int *chip, int *Sum, int *chipBet) {
+    /*Roll l?n ??u vào 7 ho?c 11 th? win ho?c n?u roll l?n ??u vào 2||3||12 th? thua cmn luôn
+     C?n n?u ko vào các tr??ng h?p trên th? t?ng s? ?i?m trên súc s?c s? l?u vào ?i?m k
+     Ti?p t?c roll cho ??n lúc:
+     if k xu?t hi?n tr??c th? th?ng esle ra 7 là thua
+     */
+    if (*Sum == 7 || *Sum == 11) {
+        printf("\n You win");
+        (*chip) = (*chip) + (*chipBet);
+    }
+    if (*Sum == 2 || *Sum == 3 || *Sum == 12) {
+        printf("\n Sorry! You lost");
+        (*chip) = (*chip) - (*chipBet);
+    }
+    //else break;
+}
+
+void playDice(int *chip, int *Sum, int *chipBet) {
+    /*
+     Roll t?ng b?ng 11 ho?c 12 th́ th?ng, n?u b?ng 2 th́ thua
+     n?u không vào 11||12||2 th́ l?u t?ng roll tr??c và s? ti?p t?c roll n?u t?ng roll l?n này > t?ng roll 1 th́ win ko th́ thua 
+     */
+    if (*Sum == 11 || *Sum == 12) {
+        printf("\n You win");
+        (*chip) = (*chip) + (*chipBet);
+    }
+    if (*Sum == 2) {
+        printf("\n You lost");
+    }
+}
+
+void rollPlay(int a[]) {
+    int j = 0;
+    for (int i = 0; i < 2; i++) {
+        int num = 1 + rand() % 6;
+        //printf("\t%d", num);
+        a[j] = num;
+        //*Sum += a[j];
+        j++;
+    }
+    printf("\n You rolled a %d", a[0] + a[1]);
+    //    printf("\na[0]= %d\n",a[0]);
+    //    printf("a[1]= %d",a[1]);
+}
+
+main() {
+    srand(time(NULL));
+    float yourM = 1000;
+    int yourM_Left=0;
+    char countinueRoll = 'r';
+    int Sum = 0, Sum2 = 0, Sum1 = 0;
+    int chip = 0;
+    int chipBet = 0;
+    int a[2];
+    int choice;
+    menu();
+    do {
+        printf("\n\n Welcome to the Casio, Here are your choice: ");
+        choice = intInput(1, 6);
+        switch (choice) {
+            case 1://Buy chips
+                buyChip(&yourM, &chip);
+                break;
+            case 2://Sell chips
+                sellChip(&chip,&yourM_Left);
+                printf("\n Chip left: %d", chip);
+                printf("\n After selling chip, you have $%.0f. Thanks for playing",yourM + yourM_Left);
+                //exit(0);
+                break;
+            case 3://Play Craps
+                //Nhap so chip ca cuoc
+                //roi roll
+                //roi tinh diem
+                printf("\n 3-Play Craps");
+                if (chip > 0) {
+                    do {
+                        printf("\n How many chips would you like to bet: ");
+                        scanf("%d", &chipBet);
+                    } while (chipBet > chip || chipBet < 0);
+                } else {
+                    printf("\n You don't have enough chip to play, back to choice and buy chip first");
+                    break;
+                }
+                printf("\n Press 'r' and hit enter for your first roll: ");
+                scanf("%s", &countinueRoll);
+                fflush(stdin);
+                if (countinueRoll == 'r') {
+                    rollPlay(a);
+                } else break;
+                Sum = a[0] + a[1];
+                playCraps(&chip, &Sum, &chipBet);
+                if (Sum == 7 || Sum == 11 || Sum == 2 || Sum == 3 || Sum == 12)
+                    break;
+                else Sum2 = Sum;
+                printf("\n");
+                //Tiep tuc roll
+                while (countinueRoll == 'r') {
+                    printf("\n Press 'r' and hit enter for your next roll: ");
+                    //fflush(stdin);
+                    scanf("%s", &countinueRoll);
+                    fflush(stdin);
+                    if (countinueRoll == 'r') {
+                        rollPlay(a);
+                        Sum1 = a[0] + a[1];
+                    }
+                    if (Sum1 == Sum2 || Sum1 == 7)
+                        countinueRoll = 'a';
+                    //esle countinueRoll ='r';
+                }
+                fflush(stdin);
+                if (Sum2 == Sum1) {
+                    printf("\n You win");
+                    chip = chip + chipBet;
+                }
+                if (Sum1 == 7) {
+                    printf("\n You lost");
+                    chip = chip - chipBet;
+                }
+                countinueRoll = 'r';
+                break;
+            case 4:
+                printf("\n 4- Play dice");
+                if (chip > 0) {
+                    do {
+                        printf("\n How many chips would you like to bet: ");
+                        scanf("%d", &chipBet);
+                    } while (chipBet > chip || chipBet < 0);
+                } else {
+                    printf("\n You don't have enough chip to play, back to choice and buy chip first");
+                    break;
+                }
+                printf("\n Press 'r' and hit enter for your first roll: ");
+                scanf("%s", &countinueRoll);
+                fflush(stdin);
+                if (countinueRoll == 'r') {
+                    rollPlay(a);
+                } else break;
+                Sum = a[0] + a[1];
+                playDice(&chip, &Sum, &chipBet);
+                if (Sum == 11 || Sum == 12 || Sum == 2)
+                    break;
+                else Sum2 = Sum;
+                while (countinueRoll == 'r') {
+                    printf("\n Press 'r' and hit enter for your next roll: ");
+                    //fflush(stdin);
+                    scanf("%s", &countinueRoll);
+                    fflush(stdin);
+                    if (countinueRoll == 'r') {
+                        rollPlay(a);
+                        Sum1 = a[0] + a[1];
+                    }
+                    if (Sum2 > Sum1 || Sum2 <= Sum1)
+                        countinueRoll = 'a';
+                }
+                fflush(stdin);
+                if (Sum2 < Sum1) {
+                    printf("\n You win");
+                    chip = chip + chipBet;
+                }
+                if (Sum2 >= Sum1) {
+                    printf("\n You lost");
+                    chip = chip - chipBet;
+                }
+                break;
+            case 5://Status Report
+                Status_Report(&yourM, &chip);
+                break;
+            case 6: exit(0);
+            default: menu();
+        }
+    } while (1);
+    //    buyChip(&yourM, &chip);
+    //    printf("\n Your chip were be buy: %d", chip);
+    //    printf("\n Money left: %.2f", yourM);
+    //    roll(a);
+    //    printf("\n Your roll: ");
+    //    printf("%d\t%d", a[0], a[1]);
+    //    int Sum; //Tong so diem khi quay suc sac
+    //    Sum = a[0] + a[1];
+    //    printf("\n Total point you got: %d", Sum);
+}
