@@ -1,0 +1,289 @@
+//OK
+#include <stdio.h>
+#include <stdlib.h>
+
+void menu() {
+    printf("\n\n====================================Menu===================================\n\n");
+    printf("\n1- Input an integer");
+    printf("\n2- Search Value and Display Value");
+    printf("\n3- Input an integer to remove the first occurrence of that integer in array");
+    printf("\n4- Input an integer to remove all the occurrence of that integer from the array");
+    printf("\n5- Display all the array's element");
+    printf("\n6- Sort the array in ascending orders");
+    printf("\n7- Sort the array in descending orders");
+    printf("\n8- Exit the program");
+    printf("\n\n==============================================================================\n");
+}
+
+void displayA(int a[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("%d  ", a[i]);
+    }
+}
+
+void findN(int a[], int n, int value) {
+    //Tim so nguyen trong mang
+    for (int i = 0; i < n; i++) {
+        if (value == a[i]) {
+            printf("a[%d]  ", i);
+        }
+    }
+}
+
+void input(int *n) {//Nhap so
+    scanf("%d", n);
+}
+
+void xoa(int a[], int &n, int value1) {
+    for (int i = 0; i < n; i++) {
+        if (a[i] == value1) {
+            for (int j = i; j < n; j++) {
+                a[j] = a[j + 1];
+            }
+            n--;
+            break;
+        }
+    }
+}
+
+void xoa1(int a[], int &n, int value2) {
+    for (int i = 0; i < n; i++) {
+        if (a[i] == value2) {
+            for (int j = i; j < n; j++) {
+                a[j] = a[j + 1];
+            }
+            n--;
+            //break;
+        }
+    }
+}
+
+void sortA(int a[], int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j <= i; j++) {
+            if (a[i] < a[j]) {
+                int b = a[i];
+                a[i] = a[j];
+                a[j] = b;
+            }
+        }
+    }
+}
+void sortD(int a[], int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j <= i; j++) {
+            if (a[i] > a[j]) {
+                int b = a[i];
+                a[i] = a[j];
+                a[j] = b;
+            }
+        }
+    }
+}
+
+main() {
+    int n;
+    do {//Nhap size cua mang thoa man dieu kien de bai
+        printf("Enter n is size of value(n<=100): ");
+        input(&n);
+    } while (n > 100);
+    int a[n]; //Khai bao mang
+    int value; //Kahi bao so can tim
+    int value1;
+    int value2; //Khai bao gia tri can tim
+    int m;
+    menu();
+    printf("\n");
+    do {
+        printf("\n====>Enter your choice: ");
+        input(&m);
+        switch (m) {
+            case 1: //Option 1 : Nhap mang
+                printf("\nEnter integer to store: \n");
+                for (int i = 0; i < n; i++)
+                    scanf("%d", &a[i]);
+                break;
+            case 2: //Option 2: Tim so nguyen va sau do xuat ra vi tri cua so nguyen do trong mang
+                printf("\nEnter the integer to search: ");
+                input(&value); //Nhap so can tim
+                printf("\nAll position of numbers to look for in arr: ");
+                findN(a, n, value);
+                printf("\n");
+                break;
+            case 3://Option 3: Nhap so nguyen va xoa gia tri dau tien no xuat hien trong mang
+                printf("\nEnter the integer to remove: ");
+                input(&value1);
+                xoa(a, n, value1);
+                //                for (int i = 0; i < n; i++) {
+                //                    printf("%d  ", a[i]);
+                //                }
+                //displayA(a, n);
+                break;
+            case 4://Option 4: Nhap so nguyen va xoa cac gia tri cua no co trong mang
+                printf("\nEnter the integer to remove: ");
+                input(&value2);
+                xoa1(a, n, value2);
+                break;
+            case 5://Option 5: Hien thi mang
+                displayA(a, n);
+                break;
+            case 6:
+                sortA(a,n);
+                break;
+            case 7:
+                sortD(a,n);
+                break;
+            default: exit(0);
+        }
+    } while (1);
+}
+
+
+LOC120 _ FIX
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void menu() {
+    printf("\n\n====================================Menu===================================\n\n");
+    printf("\n1- Input an integer");
+    printf("\n2- Search Value and Display Value");
+    printf("\n3- Input an integer to remove the first occurrence of that integer in array");
+    printf("\n4- Input an integer to remove all the occurrence of that integer from the array");
+    printf("\n5- Display all the array's element");
+    printf("\n6- Sort the array in ascending orders");
+    printf("\n7- Sort the array in descending orders");
+    printf("\n8- Exit the program");
+    printf("\n\n==============================================================================\n");
+}
+
+void displayA(int a[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("%d  ", a[i]);
+    }
+}
+
+void findN(int a[], int n, int value) {
+    //Tim so nguyen trong mang
+    for (int i = 0; i < n; i++) {
+        if (value == a[i]) {
+            printf("a[%d]  ", i);
+        }
+    }
+}
+
+void input(int *n) {//Nhap so
+    scanf("%d", n);
+}
+
+void xoa1(int a[], int &n, int value1) {
+    for (int i = 0; i < n; i++) {
+        if (a[i] == value1) {
+            for (int j = i; j < n; j++) {
+                a[j] = a[j + 1];
+            }
+            n--;
+            break;
+        }
+     
+    }
+}
+
+void xoa(int a[], int &n, int pos) {
+    for (int i = pos + 1; i < n; i++) {
+        a[i - 1] = a[i];
+    }
+    n--;
+}
+
+void xoa2(int a[], int &n, int value2) {
+    for (int i = 0; i < n; i++) {
+        if (a[i] == value2) {
+            for (int j = i; j < n; j++) {
+                if (a[j] == value2) {
+                    xoa(a, n, j);
+                    j--;
+                }
+            }
+        }
+    }
+}
+
+    void sortA(int a[], int n) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (a[i] < a[j]) {
+                    int b = a[i];
+                    a[i] = a[j];
+                    a[j] = b;
+                }
+            }
+        }
+    }
+
+    void sortD(int a[], int n) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (a[i] > a[j]) {
+                    int b = a[i];
+                    a[i] = a[j];
+                    a[j] = b;
+                }
+            }
+        }
+    }
+
+    main() {
+        int n;
+        do {//Nhap size cua mang thoa man dieu kien de bai
+            printf("Enter n is size of value(n<=100): ");
+            input(&n);
+        } while (n > 100);
+        int a[n]; //Khai bao mang
+        int value; //Kahi bao so can tim
+        int value1;
+        int value2; //Khai bao gia tri can tim
+        int m;
+        menu();
+        printf("\n");
+        do {
+            printf("\n====>Enter your choice: ");
+            input(&m);
+            switch (m) {
+                case 1: //Option 1 : Nhap mang
+                    printf("\nEnter integer to store: \n");
+                    for (int i = 0; i < n; i++)
+                        scanf("%d", &a[i]);
+                    break;
+                case 2: //Option 2: Tim so nguyen va sau do xuat ra vi tri cua so nguyen do trong mang
+                    printf("\nEnter the integer to search: ");
+                    input(&value); //Nhap so can tim
+                    printf("\nAll position of numbers to look for in arr: ");
+                    findN(a, n, value);
+                    printf("\n");
+                    break;
+                case 3://Option 3: Nhap so nguyen va xoa gia tri trung nhau dau tien no xuat hien trong mang
+                    printf("\nEnter the integer to remove: ");
+                    input(&value1);
+                    //printf("%d",value1);
+                    xoa1(a, n, value1);
+                    break;
+                case 4://Option 4: Nhap so nguyen va xoa toan bo cac gia tri cua no co trong mang
+                    printf("\nEnter the integer to remove: ");
+                    input(&value2);
+                    xoa2(a, n, value2);
+                    break;
+                case 5://Option 5: Hien thi mang
+                    displayA(a, n);
+                    break;
+                case 6:
+                    sortA(a, n);
+                    break;
+                case 7:
+                    sortD(a, n);
+                    break;
+                default: menu();
+                break;
+            }
+        } while (1);
+    }
